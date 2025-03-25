@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.justin.app_back.mapper.DevUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.justin.app_back.pojo.DevUser">
+            <id property="id" column="id" />
+            <result property="devcode" column="devCode" />
+            <result property="devname" column="devName" />
+            <result property="devpassword" column="devPassword" />
+            <result property="devemail" column="devEmail" />
+            <result property="devinfo" column="devInfo" />
+            <result property="createdby" column="createdBy" />
+            <result property="createddate" column="createdDate" />
+            <result property="modifyby" column="modifyBy" />
+            <result property="modifydate" column="modifyDate" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,devCode,devName,devPassword,devEmail,devInfo,
+        createdBy,createdDate,modifyBy,modifyDate
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from dev_user
+        where  id = #{id} 
+    </select>
+    <select id="selectByUsername" resultType="com.justin.app_back.pojo.DevUser">
+        select
+        <include refid="Base_Column_List" />
+        from dev_user
+        where  devName = #{username}
+    </select>
+    <select id="selectBy" resultType="com.justin.app_back.pojo.BackendUser">
+        select
+            <include refid="Base_Column_List"/>
+            from dev_user
+        <where>
+            <if test="devname != null and devname != ''">
+                devName like concat ('%', #{devname}, '%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from dev_user
+        where  id = #{id} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.DevUser" useGeneratedKeys="true">
+        insert into dev_user
+        ( id,devCode,devName,devPassword,devEmail,devInfo,
+        createdBy,createdDate,modifyBy,modifyDate)
+        values (#{id},#{devcode},#{devname},#{devpassword},#{devemail},#{devinfo},
+        #{createdby},#{createddate},#{modifyby},#{modifydate})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.DevUser" useGeneratedKeys="true">
+        insert into dev_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="devcode != null">devCode,</if>
+                <if test="devname != null">devName,</if>
+                <if test="devpassword != null">devPassword,</if>
+                <if test="devemail != null">devEmail,</if>
+                <if test="devinfo != null">devInfo,</if>
+                <if test="createdby != null">createdBy,</if>
+                <if test="createddate != null">createdDate,</if>
+                <if test="modifyby != null">modifyBy,</if>
+                <if test="modifydate != null">modifyDate,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="devcode != null">#{devcode},</if>
+                <if test="devname != null">#{devname},</if>
+                <if test="devpassword != null">#{devpassword},</if>
+                <if test="devemail != null">#{devemail},</if>
+                <if test="devinfo != null">#{devinfo},</if>
+                <if test="createdby != null">#{createdby},</if>
+                <if test="createddate != null">#{createddate},</if>
+                <if test="modifyby != null">#{modifyby},</if>
+                <if test="modifydate != null">#{modifydate},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.justin.app_back.pojo.DevUser">
+        update dev_user
+        <set>
+                <if test="devcode != null">
+                    devCode = #{devcode},
+                </if>
+                <if test="devname != null">
+                    devName = #{devname},
+                </if>
+                <if test="devpassword != null">
+                    devPassword = #{devpassword},
+                </if>
+                <if test="devemail != null">
+                    devEmail = #{devemail},
+                </if>
+                <if test="devinfo != null">
+                    devInfo = #{devinfo},
+                </if>
+                <if test="createdby != null">
+                    createdBy = #{createdby},
+                </if>
+                <if test="createddate != null">
+                    createdDate = #{createddate},
+                </if>
+                <if test="modifyby != null">
+                    modifyBy = #{modifyby},
+                </if>
+                <if test="modifydate != null">
+                    modifyDate = #{modifydate},
+                </if>
+        </set>
+        where   id = #{id} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.justin.app_back.pojo.DevUser">
+        update dev_user
+        set 
+            devCode =  #{devcode},
+            devName =  #{devname},
+            devPassword =  #{devpassword},
+            devEmail =  #{devemail},
+            devInfo =  #{devinfo},
+            createdBy =  #{createdby},
+            createdDate =  #{createddate},
+            modifyBy =  #{modifyby},
+            modifyDate =  #{modifydate}
+        where   id = #{id} 
+    </update>
+</mapper>

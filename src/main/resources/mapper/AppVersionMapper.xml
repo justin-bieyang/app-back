@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.justin.app_back.mapper.AppVersionMapper">
+
+    <resultMap id="BaseResultMap" type="com.justin.app_back.pojo.AppVersion">
+            <id property="id" column="id" />
+            <result property="appid" column="appId" />
+            <result property="versioninfo" column="versionInfo" />
+            <result property="publishstatus" column="publishStatus" />
+            <result property="downloadlink" column="downloadLink" />
+            <result property="versionsize" column="versionSize" />
+            <result property="createdby" column="createdBy" />
+            <result property="createddate" column="createdDate" />
+            <result property="modifyby" column="modifyBy" />
+            <result property="modifydate" column="modifyDate" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,appId,versionInfo,publishStatus,downloadLink,versionSize,
+        createdBy,createdDate,modifyBy,modifyDate
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from app_version
+        where  id = #{id} 
+    </select>
+    <select id="selectByAppId" resultType="com.justin.app_back.pojo.AppVersion">
+        select
+            <include refid="Base_Column_List"/>
+            from app_version
+        where appId = #{appid}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from app_version
+        where  id = #{id} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.AppVersion" useGeneratedKeys="true">
+        insert into app_version
+        ( id,appId,versionInfo,publishStatus,downloadLink,versionSize,
+        createdBy,createdDate,modifyBy,modifyDate)
+        values (#{id},#{appid},#{versioninfo},#{publishstatus},#{downloadlink},#{versionsize},
+        #{createdby},#{createddate},#{modifyby},#{modifydate})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.AppVersion" useGeneratedKeys="true">
+        insert into app_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="appid != null">appId,</if>
+                <if test="versioninfo != null">versionInfo,</if>
+                <if test="publishstatus != null">publishStatus,</if>
+                <if test="downloadlink != null">downloadLink,</if>
+                <if test="versionsize != null">versionSize,</if>
+                <if test="createdby != null">createdBy,</if>
+                <if test="createddate != null">createdDate,</if>
+                <if test="modifyby != null">modifyBy,</if>
+                <if test="modifydate != null">modifyDate,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="appid != null">#{appid},</if>
+                <if test="versioninfo != null">#{versioninfo},</if>
+                <if test="publishstatus != null">#{publishstatus},</if>
+                <if test="downloadlink != null">#{downloadlink},</if>
+                <if test="versionsize != null">#{versionsize},</if>
+                <if test="createdby != null">#{createdby},</if>
+                <if test="createddate != null">#{createddate},</if>
+                <if test="modifyby != null">#{modifyby},</if>
+                <if test="modifydate != null">#{modifydate},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.justin.app_back.pojo.AppVersion">
+        update app_version
+        <set>
+                <if test="appid != null">
+                    appId = #{appid},
+                </if>
+                <if test="versioninfo != null">
+                    versionInfo = #{versioninfo},
+                </if>
+                <if test="publishstatus != null">
+                    publishStatus = #{publishstatus},
+                </if>
+                <if test="downloadlink != null">
+                    downloadLink = #{downloadlink},
+                </if>
+                <if test="versionsize != null">
+                    versionSize = #{versionsize},
+                </if>
+                <if test="createdby != null">
+                    createdBy = #{createdby},
+                </if>
+                <if test="createddate != null">
+                    createdDate = #{createddate},
+                </if>
+                <if test="modifyby != null">
+                    modifyBy = #{modifyby},
+                </if>
+                <if test="modifydate != null">
+                    modifyDate = #{modifydate},
+                </if>
+        </set>
+        where   id = #{id} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.justin.app_back.pojo.AppVersion">
+        update app_version
+        set 
+            appId =  #{appid},
+            versionInfo =  #{versioninfo},
+            publishStatus =  #{publishstatus},
+            downloadLink =  #{downloadlink},
+            versionSize =  #{versionsize},
+            createdBy =  #{createdby},
+            createdDate =  #{createddate},
+            modifyBy =  #{modifyby},
+            modifyDate =  #{modifydate}
+        where   id = #{id} 
+    </update>
+</mapper>

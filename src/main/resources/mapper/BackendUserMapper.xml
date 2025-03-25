@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.justin.app_back.mapper.BackendUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.justin.app_back.pojo.BackendUser">
+            <id property="id" column="id" />
+            <result property="usercode" column="userCode" />
+            <result property="username" column="userName" />
+            <result property="usertype" column="userType" />
+            <result property="createdate" column="createDate" />
+            <result property="modifyby" column="modifyBy" />
+            <result property="modifydate" column="modifyDate" />
+            <result property="userpassword" column="userPassword" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,userCode,userName,userType,createDate,
+        modifyBy,modifyDate,userPassword
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from backend_user
+        where  id = #{id} 
+    </select>
+    <select id="selectByAdminUsername" resultType="com.justin.app_back.pojo.BackendUser">
+        select
+        <include refid="Base_Column_List" />
+        from backend_user
+        where userName = #{username} and userType = 1
+    </select>
+    <select id="selectBy" resultType="com.justin.app_back.pojo.BackendUser">
+        select
+            *
+        from backend_user
+        <where>
+            <if test="username != null and username != ''">
+                userName like concat ('%', #{username}, '%')
+            </if>
+            <if test="usertype != null and usertype != ''">
+                and userType = #{usertype}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectByCommonUsername" resultType="com.justin.app_back.pojo.BackendUser">
+        select
+        <include refid="Base_Column_List" />
+        from backend_user
+        where userName = #{username} and userType = 2
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from backend_user
+        where  id = #{id} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.BackendUser" useGeneratedKeys="true">
+        insert into backend_user
+        ( id,userCode,userName,userType,createDate,
+        modifyBy,modifyDate,userPassword)
+        values (#{id},#{usercode},#{username},#{usertype},#{createdate},
+        #{modifyby},#{modifydate},#{userpassword})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.BackendUser" useGeneratedKeys="true">
+        insert into backend_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="usercode != null">userCode,</if>
+                <if test="username != null">userName,</if>
+                <if test="usertype != null">userType,</if>
+                <if test="createdate != null">createDate,</if>
+                <if test="modifyby != null">modifyBy,</if>
+                <if test="modifydate != null">modifyDate,</if>
+                <if test="userpassword != null">userPassword,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="usercode != null">#{usercode},</if>
+                <if test="username != null">#{username},</if>
+                <if test="usertype != null">#{usertype},</if>
+                <if test="createdate != null">#{createdate},</if>
+                <if test="modifyby != null">#{modifyby},</if>
+                <if test="modifydate != null">#{modifydate},</if>
+                <if test="userpassword != null">#{userpassword},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.justin.app_back.pojo.BackendUser">
+        update backend_user
+        <set>
+                <if test="usercode != null">
+                    userCode = #{usercode},
+                </if>
+                <if test="username != null">
+                    userName = #{username},
+                </if>
+                <if test="usertype != null">
+                    userType = #{usertype},
+                </if>
+                <if test="createdate != null">
+                    createDate = #{createdate},
+                </if>
+                <if test="modifyby != null">
+                    modifyBy = #{modifyby},
+                </if>
+                <if test="modifydate != null">
+                    modifyDate = #{modifydate},
+                </if>
+                <if test="userpassword != null">
+                    userPassword = #{userpassword},
+                </if>
+        </set>
+        where   id = #{id} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.justin.app_back.pojo.BackendUser">
+        update backend_user
+        set 
+            userCode =  #{usercode},
+            userName =  #{username},
+            userType =  #{usertype},
+            createDate =  #{createdate},
+            modifyBy =  #{modifyby},
+            modifyDate =  #{modifydate},
+            userPassword =  #{userpassword}
+        where   id = #{id} 
+    </update>
+</mapper>

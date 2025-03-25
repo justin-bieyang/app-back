@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.justin.app_back.mapper.DateDictionaryMapper">
+
+    <resultMap id="BaseResultMap" type="com.justin.app_back.pojo.DateDictionary">
+            <id property="id" column="id" />
+            <result property="typecode" column="typeCode" />
+            <result property="typename" column="typeName" />
+            <result property="valueid" column="valueId" />
+            <result property="valuename" column="valueName" />
+            <result property="createby" column="createBy" />
+            <result property="createddate" column="createdDate" />
+            <result property="modifyby" column="modifyBy" />
+            <result property="modifydate" column="modifyDate" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,typeCode,typeName,valueId,valueName,createBy,
+        createdDate,modifyBy,modifyDate
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from date_dictionary
+        where  id = #{id} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from date_dictionary
+        where  id = #{id} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.DateDictionary" useGeneratedKeys="true">
+        insert into date_dictionary
+        ( id,typeCode,typeName,valueId,valueName,createBy,
+        createdDate,modifyBy,modifyDate)
+        values (#{id},#{typecode},#{typename},#{valueid},#{valuename},#{createby},
+        #{createddate},#{modifyby},#{modifydate})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.DateDictionary" useGeneratedKeys="true">
+        insert into date_dictionary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="typecode != null">typeCode,</if>
+                <if test="typename != null">typeName,</if>
+                <if test="valueid != null">valueId,</if>
+                <if test="valuename != null">valueName,</if>
+                <if test="createby != null">createBy,</if>
+                <if test="createddate != null">createdDate,</if>
+                <if test="modifyby != null">modifyBy,</if>
+                <if test="modifydate != null">modifyDate,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="typecode != null">#{typecode},</if>
+                <if test="typename != null">#{typename},</if>
+                <if test="valueid != null">#{valueid},</if>
+                <if test="valuename != null">#{valuename},</if>
+                <if test="createby != null">#{createby},</if>
+                <if test="createddate != null">#{createddate},</if>
+                <if test="modifyby != null">#{modifyby},</if>
+                <if test="modifydate != null">#{modifydate},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.justin.app_back.pojo.DateDictionary">
+        update date_dictionary
+        <set>
+                <if test="typecode != null">
+                    typeCode = #{typecode},
+                </if>
+                <if test="typename != null">
+                    typeName = #{typename},
+                </if>
+                <if test="valueid != null">
+                    valueId = #{valueid},
+                </if>
+                <if test="valuename != null">
+                    valueName = #{valuename},
+                </if>
+                <if test="createby != null">
+                    createBy = #{createby},
+                </if>
+                <if test="createddate != null">
+                    createdDate = #{createddate},
+                </if>
+                <if test="modifyby != null">
+                    modifyBy = #{modifyby},
+                </if>
+                <if test="modifydate != null">
+                    modifyDate = #{modifydate},
+                </if>
+        </set>
+        where   id = #{id} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.justin.app_back.pojo.DateDictionary">
+        update date_dictionary
+        set 
+            typeCode =  #{typecode},
+            typeName =  #{typename},
+            valueId =  #{valueid},
+            valueName =  #{valuename},
+            createBy =  #{createby},
+            createdDate =  #{createddate},
+            modifyBy =  #{modifyby},
+            modifyDate =  #{modifydate}
+        where   id = #{id} 
+    </update>
+</mapper>

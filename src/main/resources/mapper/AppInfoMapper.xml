@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.justin.app_back.mapper.AppInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.justin.app_back.pojo.AppInfo">
+            <id property="id" column="id" />
+            <result property="softwarename" column="softwareName" />
+            <result property="apkname" column="apkName" />
+            <result property="supportrom" column="supportROM" />
+            <result property="interfacelanguage" column="interfaceLanguage" />
+            <result property="softwaresize" column="softwareSize" />
+            <result property="updetedate" column="updeteDate" />
+            <result property="devid" column="devId" />
+            <result property="appinfo" column="appInfo" />
+            <result property="status" column="status" />
+            <result property="onsaledate" column="onSaleDate" />
+            <result property="offsaledate" column="offSaleDate" />
+            <result property="platformid" column="platformId" />
+            <result property="logopicpath" column="logopicPath" />
+            <result property="categorylevel1" column="categoryLevel1" />
+            <result property="categorylevel2" column="categoryLevel2" />
+            <result property="downloads" column="downloads" />
+            <result property="createddate" column="createdDate" />
+            <result property="modifyby" column="modifyBy" />
+            <result property="modifydate" column="modifyDate" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,softwareName,apkName,supportROM,interfaceLanguage,softwareSize,
+        updeteDate,devId,appInfo,status,onSaleDate,
+        offSaleDate,platformId,logopicPath,categoryLevel1,categoryLevel2,downloads,
+        createdDate,modifyBy,modifyDate
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from app_info
+        where  id = #{id}
+    </select>
+    <select id="selectBy" resultType="com.justin.app_back.pojo.AppInfo">
+        select
+        a.*,
+        ac1.categoryName as level1Name,
+        ac2.categoryName as level2Name
+        from app_info a
+        left join app_category ac1 on ac1.id = a.categoryLevel1
+        left join app_category ac2 on ac2.id = a.categoryLevel2
+        <where>
+            <if test="softwarename != null and softwarename != ''">
+                softwareName like concat ('%', #{softwarename}, '%')
+            </if>
+            <if test="apkname != null and apkname != ''">
+                and apkName = #{apkname}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="platformid != null">
+                and platformId = #{platformid}
+            </if>
+            <if test="categorylevel1 != null">
+                and categoryLevel1 = #{categorylevel1}
+            </if>
+            <if test="categorylevel2 != null">
+                and categoryLevel2 = #{categorylevel2}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from app_info
+        where  id = #{id} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.AppInfo" useGeneratedKeys="true">
+        insert into app_info
+        ( id,softwareName,apkName,supportROM,interfaceLanguage,softwareSize,
+        updeteDate,devId,appInfo,status,onSaleDate,
+        offSaleDate,platformId,logopicPath,categoryLevel1,categoryLevel2,downloads,
+        createdDate,modifyBy,modifyDate)
+        values (#{id},#{softwarename},#{apkname},#{supportrom},#{interfacelanguage},#{softwaresize},
+        #{updetedate},#{devid},#{appinfo},#{status},#{onsaledate},
+        #{offsaledate},#{platformid},#{logopicpath},#{categorylevel1},#{categorylevel2},#{downloads},
+        #{createddate},#{modifyby},#{modifydate})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.justin.app_back.pojo.AppInfo" useGeneratedKeys="true">
+        insert into app_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="softwarename != null">softwareName,</if>
+                <if test="apkname != null">apkName,</if>
+                <if test="supportrom != null">supportROM,</if>
+                <if test="interfacelanguage != null">interfaceLanguage,</if>
+                <if test="softwaresize != null">softwareSize,</if>
+                <if test="updetedate != null">updeteDate,</if>
+                <if test="devid != null">devId,</if>
+                <if test="appinfo != null">appInfo,</if>
+                <if test="status != null">status,</if>
+                <if test="onsaledate != null">onSaleDate,</if>
+                <if test="offsaledate != null">offSaleDate,</if>
+                <if test="platformid != null">platformId,</if>
+                <if test="logopicpath != null">logopicPath,</if>
+                <if test="categorylevel1 != null">categoryLevel1,</if>
+            <if test="categorylevel2 != null">categoryLevel2,</if>
+            <if test="downloads != null">downloads,</if>
+                <if test="createddate != null">createdDate,</if>
+                <if test="modifyby != null">modifyBy,</if>
+                <if test="modifydate != null">modifyDate,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="softwarename != null">#{softwarename},</if>
+                <if test="apkname != null">#{apkname},</if>
+                <if test="supportrom != null">#{supportrom},</if>
+                <if test="interfacelanguage != null">#{interfacelanguage},</if>
+                <if test="softwaresize != null">#{softwaresize},</if>
+                <if test="updetedate != null">#{updetedate},</if>
+                <if test="devid != null">#{devid},</if>
+                <if test="appinfo != null">#{appinfo},</if>
+                <if test="status != null">#{status},</if>
+                <if test="onsaledate != null">#{onsaledate},</if>
+                <if test="offsaledate != null">#{offsaledate},</if>
+                <if test="platformid != null">#{platformid},</if>
+                <if test="logopicpath != null">#{logopicPath},</if>
+                <if test="categorylevel1 != null">#{categorylevel1},</if>
+                <if test="categorylevel2 != null">#{categorylevel2},</if>
+                <if test="downloads != null">#{downloads},</if>
+                <if test="createddate != null">#{createddate},</if>
+                <if test="modifyby != null">#{modifyby},</if>
+                <if test="modifydate != null">#{modifydate},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.justin.app_back.pojo.AppInfo">
+        update app_info
+        <set>
+                <if test="softwarename != null">
+                    softwareName = #{softwarename},
+                </if>
+                <if test="apkname != null">
+                    apkName = #{apkname},
+                </if>
+                <if test="supportrom != null">
+                    supportROM = #{supportrom},
+                </if>
+                <if test="interfacelanguage != null">
+                    interfaceLanguage = #{interfacelanguage},
+                </if>
+                <if test="softwaresize != null">
+                    softwareSize = #{softwaresize},
+                </if>
+                <if test="updetedate != null">
+                    updeteDate = #{updetedate},
+                </if>
+                <if test="devid != null">
+                    devId = #{devid},
+                </if>
+                <if test="appinfo != null">
+                    appInfo = #{appinfo},
+                </if>
+                <if test="status != null">
+                    status = #{status},
+                </if>
+                <if test="onsaledate != null">
+                    onSaleDate = #{onsaledate},
+                </if>
+                <if test="offsaledate != null">
+                    offSaleDate = #{offsaledate},
+                </if>
+                <if test="platformid != null">
+                    platformId = #{platformid},
+                </if>
+                <if test="logopicpath != null">
+                    logopicPath = #{logopicpath},
+                </if>
+                <if test="categorylevel1 != null">
+                    categoryLevel1 = #{categorylevel1},
+                </if>
+                <if test="categorylevel2 != null">
+                    categoryLevel2 = #{categorylevel2},
+                </if>
+                <if test="downloads != null">
+                    downloads = #{downloads},
+                </if>
+                <if test="createddate != null">
+                    createdDate = #{createddate},
+                </if>
+                <if test="modifyby != null">
+                    modifyBy = #{modifyby},
+                </if>
+                <if test="modifydate != null">
+                    modifyDate = #{modifydate},
+                </if>
+        </set>
+        where   id = #{id} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.justin.app_back.pojo.AppInfo">
+        update app_info
+        set 
+            softwareName =  #{softwarename},
+            apkName =  #{apkname},
+            supportROM =  #{supportrom},
+            interfaceLanguage =  #{interfacelanguage},
+            softwareSize =  #{softwaresize},
+            updeteDate =  #{updetedate},
+            devId =  #{devid},
+            appInfo =  #{appinfo},
+            status =  #{status},
+            onSaleDate =  #{onsaledate},
+            offSaleDate =  #{offsaledate},
+            platformId =  #{platformid},
+            logopicPath =  #{logopicpath},
+            categoryLevel1 =  #{categorylevel1},
+            categoryLevel2 =  #{categorylevel2},
+            downloads =  #{downloads},
+            createdDate =  #{createddate},
+            modifyBy =  #{modifyby},
+            modifyDate =  #{modifydate}
+        where   id = #{id} 
+    </update>
+</mapper>
