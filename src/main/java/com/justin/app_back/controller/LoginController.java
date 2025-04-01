@@ -2,6 +2,7 @@ package com.justin.app_back.controller;
 
 import com.justin.app_back.dto.LoginDto;
 import com.justin.app_back.service.LoginService;
+import com.justin.app_back.vo.LoginVo;
 import com.justin.app_back.vo.ResultVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,11 +30,11 @@ public class LoginController {
 //        }
 
 
-       String token = loginService.login(loginDto);
+        LoginVo login = loginService.login(loginDto);
 
 //       httpSession.setAttribute("login","jack");
 
-        return ResultVo.success("登录成功",token);
+        return ResultVo.success("登录成功",login);
 
     }
 

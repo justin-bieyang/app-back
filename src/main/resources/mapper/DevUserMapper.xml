@@ -34,7 +34,7 @@
         from dev_user
         where  devName = #{username}
     </select>
-    <select id="selectBy" resultType="com.justin.app_back.pojo.BackendUser">
+    <select id="selectBy" resultType="com.justin.app_back.pojo.DevUser">
         select
             <include refid="Base_Column_List"/>
             from dev_user

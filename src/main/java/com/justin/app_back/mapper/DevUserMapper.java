@@ -27,5 +27,5 @@ public interface DevUserMapper {
 
     int updateByPrimaryKey(DevUser record);
 
-    List<BackendUser> selectBy(DevUser devUser);
+    List<DevUser> selectBy(DevUser devUser);
 }

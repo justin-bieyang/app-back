@@ -1,6 +1,7 @@
 package com.justin.app_back.service;
 
 import com.justin.app_back.dto.LoginDto;
+import com.justin.app_back.vo.LoginVo;
 
 /**
  * @author 小杜
@@ -8,5 +9,5 @@ import com.justin.app_back.dto.LoginDto;
  * @since 1.0
  */
 public interface LoginService {
-    String login(LoginDto loginDto);
+    LoginVo login(LoginDto loginDto);
 }

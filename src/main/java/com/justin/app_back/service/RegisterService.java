@@ -1,6 +1,8 @@
 package com.justin.app_back.service;
 
-import com.justin.app_back.dto.RegisterDto;
+
+import com.justin.app_back.dto.DevRegisterDto;
+import com.justin.app_back.dto.UserRegisterDto;
 
 /**
  * @author 小杜
@@ -9,5 +11,7 @@ import com.justin.app_back.dto.RegisterDto;
  */
 public interface RegisterService {
 
-    void registerCommonUser(RegisterDto registerDto);
+    void registerCommonUser(UserRegisterDto registerDto);
+
+    void registerDev(DevRegisterDto registerDto);
 }

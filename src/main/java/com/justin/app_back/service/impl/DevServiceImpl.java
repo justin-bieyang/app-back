@@ -9,7 +9,9 @@ import com.justin.app_back.service.DevService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 小杜
@@ -26,7 +28,40 @@ public class DevServiceImpl implements DevService {
     public PageInfo geyPage(DevUser devUser, int pageNum) {
 
         PageHelper.startPage(pageNum, 5, "id asc");
-        List<BackendUser> backendUserList = devUserMapper.selectBy(devUser);
-        return new PageInfo(backendUserList);
+        List<DevUser> devUsers = devUserMapper.selectBy(devUser);
+        return new PageInfo(devUsers);
+    }
+
+    @Override
+    public void updateDev(DevUser devUser, Integer adminOrDevId, String userType) {
+
+        if(userType.equals("admin")){
+            devUser.setModifyby(adminOrDevId);
+
+            devUser.setModifydate((new Date()));
+
+            devUserMapper.updateByPrimaryKeySelective(devUser);
+        } else if (userType.equals("dev")) {
+            if(!Objects.equals(adminOrDevId, devUser.getId())){
+                throw new RuntimeException("你只能修改本人的信息");
+            } else if (Objects.equals(adminOrDevId, devUser.getId())) {
+                devUser.setModifyby(adminOrDevId);
+
+                devUser.setModifydate((new Date()));
+
+                devUserMapper.updateByPrimaryKeySelective(devUser);
+            }
+        }
+    }
+
+    @Override
+    public void addDev(DevUser devUser, Integer adminId) {
+        devUser.setCreatedby(adminId);
+        devUserMapper.insert(devUser);
+    }
+
+    @Override
+    public void deleteDev(Integer id) {
+        devUserMapper.deleteByPrimaryKey(id);
     }
 }

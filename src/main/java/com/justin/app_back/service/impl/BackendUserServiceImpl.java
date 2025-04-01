@@ -8,7 +8,9 @@ import com.justin.app_back.service.BackendUserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 小杜
@@ -35,7 +37,20 @@ public class BackendUserServiceImpl implements BackendUserService {
     }
 
     @Override
-    public void updateUserType(BackendUser backendUser) {
-        backendUserMapper.updateByPrimaryKeySelective(backendUser);
+    public void updateUserType(BackendUser backendUser, Integer adminOrUserId, String userType) {
+
+        if (userType.equals("admin")) {
+            backendUser.setModifyby(adminOrUserId);
+            backendUser.setModifydate(new Date());
+            backendUserMapper.updateByPrimaryKeySelective(backendUser);
+        } else if (userType.equals("user")) {
+            if (!Objects.equals(adminOrUserId, backendUser.getId())) {
+                throw new RuntimeException("你只能修改本人信息");
+            } else if (Objects.equals(adminOrUserId, backendUser.getId())) {
+                backendUser.setModifyby(adminOrUserId);
+                backendUser.setModifydate(new Date());
+                backendUserMapper.updateByPrimaryKeySelective(backendUser);
+            }
+        }
     }
 }

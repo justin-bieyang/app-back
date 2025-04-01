@@ -70,6 +70,49 @@
         </where>
     </select>
 
+    <select id="selectCollectBy" resultType="com.justin.app_back.pojo.AppInfo">
+        SELECT
+        a.*,
+        ac1.categoryName AS level1Name,
+        ac2.categoryName AS level2Name
+        FROM
+        app_info a
+        LEFT JOIN
+        app_category ac1 ON ac1.id = a.categoryLevel1
+        LEFT JOIN
+        app_category ac2 ON ac2.id = a.categoryLevel2
+        -- 通过 JOIN 关联用户和App的关系表（替代子查询）
+        JOIN
+        user_app_fk uaf ON uaf.appId = a.id AND uaf.userId = #{userId}
+        <where>
+            <if test="appInfo.softwarename != null and appInfo.softwarename != ''">
+                a.softwareName LIKE CONCAT('%', #{appInfo.softwarename}, '%')
+            </if>
+            <if test="appInfo.apkname != null and appInfo.apkname != ''">
+                AND a.apkName = #{appInfo.apkname}
+            </if>
+            <if test="appInfo.status != null">
+                AND a.status = #{appInfo.status}
+            </if>
+            <if test="appInfo.platformid != null">
+                AND a.platformId = #{appInfo.platformid}
+            </if>
+            <if test="appInfo.categorylevel1 != null">
+                AND a.categoryLevel1 = #{appInfo.categorylevel1}
+            </if>
+            <if test="appInfo.categorylevel2 != null">
+                AND a.categoryLevel2 = #{appInfo.categorylevel2}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByUserId" resultType="java.lang.Integer">
+        select
+            appId
+        from user_app_fk
+        where userId = #{userId}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from app_info
         where  id = #{id} 
@@ -131,6 +174,9 @@
                 <if test="modifyby != null">#{modifyby},</if>
                 <if test="modifydate != null">#{modifydate},</if>
         </trim>
+    </insert>
+    <insert id="insertAppOfUser">
+        insert into user_app_fk(userId, appId, createddate) values (#{userId}, #{appId}, #{createddate})
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.justin.app_back.pojo.AppInfo">
         update app_info

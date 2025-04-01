@@ -16,29 +16,28 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class BackendUserController {
 
     @Resource
     private BackendUserService backendUserService;
     @PostMapping("/page")
     public ResultVo page(@RequestBody BackendUser backendUser,@RequestParam(defaultValue = "1") int pageNum) {
         PageInfo pageInfo = backendUserService.getPage(backendUser,pageNum);
-        return ResultVo.success("",pageInfo);
+        return ResultVo.success("用户分页查询成功",pageInfo);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResultVo delete(@PathVariable("id") Integer id) {
         backendUserService.deleteById(id);
-        return ResultVo.success("",null);
+        return ResultVo.success("删除用户成功",null);
     }
 
     @PostMapping("/updateType")
-    public ResultVo updateType(@RequestBody BackendUser backendUser) {
-        backendUserService.updateUserType(backendUser);
-        return ResultVo.success("",null);
+    public ResultVo updateType(@RequestBody BackendUser backendUser,
+                               @RequestParam Integer adminOrUserId,
+                               @RequestParam String userType) {
+        backendUserService.updateUserType(backendUser, adminOrUserId, userType);
+        return ResultVo.success("更新用户成功",null);
     }
-
-
-
 
 }

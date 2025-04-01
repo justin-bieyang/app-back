@@ -4,8 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.justin.app_back.mapper.AppInfoMapper;
 import com.justin.app_back.mapper.AppVersionMapper;
+import com.justin.app_back.mapper.UserAppFkMapper;
 import com.justin.app_back.pojo.AppInfo;
 import com.justin.app_back.pojo.AppVersion;
+import com.justin.app_back.pojo.UsersApp;
 import com.justin.app_back.service.AppInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -30,6 +33,9 @@ public class AppInfoServiceImpl implements AppInfoService {
     @Resource
     private AppVersionMapper appVersionMapper;
 
+    @Resource
+    private UserAppFkMapper userAppFkMapper;
+
     @Override
     public PageInfo getPage(AppInfo appInfo, int pageNum) {
 
@@ -41,22 +47,49 @@ public class AppInfoServiceImpl implements AppInfoService {
     }
 
     @Override
-    public int update(AppInfo appInfo) {
+    public PageInfo getCollectPage(AppInfo appInfo, int pageNum, Integer userId) {
+        PageHelper.startPage(pageNum, 5, "id asc");
+
+        List<AppInfo> appInfoList = appInfoMapper.selectCollectBy(appInfo,userId);
+
+        return new PageInfo(appInfoList);
+    }
+
+    @Override
+    public void cancelCollect(Integer appId, Integer userId) {
+        userAppFkMapper.delete(appId, userId);
+    }
+
+    @Override
+    public int update(AppInfo appInfo, Integer adminOrDevId) {
 
         if (appInfo.getId() == null) {
 
-            appInfo.setDevid(new Random().nextInt(2) + 1);
+
+            if (appInfo.getSoftwarename().trim().isEmpty()) {
+                throw new RuntimeException("请输入有用的游戏名");
+            }
+
+
             appInfo.setCreateddate(new Date());
             appInfo.setDownloads(0L);
             appInfo.setStatus(1); // 待审核
+            appInfo.setDevid(adminOrDevId);
 
             return appInfoMapper.insert(appInfo);
 
 
 
         } else {
-            appInfo.setModifydate(new Date());
-            return appInfoMapper.updateByPrimaryKeySelective(appInfo);
+            AppInfo appInfo1 = appInfoMapper.selectByPrimaryKey(appInfo.getId());
+            if (!(Objects.equals(appInfo1.getDevid(), adminOrDevId))) {
+                throw new RuntimeException("你只能修改你自己开发的游戏信息");
+            }else {
+                appInfo.setStatus(1); // 待审核
+                appInfo.setModifydate(new Date());
+                appInfo.setModifyby(adminOrDevId);
+                return appInfoMapper.updateByPrimaryKeySelective(appInfo);
+            }
         }
     }
 
@@ -131,4 +164,42 @@ public class AppInfoServiceImpl implements AppInfoService {
         appInfo.setVersions(appVersionMapper.selectByAppId(appid));
         return appInfo;
     }
+
+    @Override
+    public void reviewAppStatus(AppInfo appInfo, Integer adminId, Integer statusId) {
+
+        AppInfo appInfo1 = appInfoMapper.selectByPrimaryKey(appInfo.getId());
+
+        if (Objects.equals(appInfo1.getStatus(), statusId)) {
+            appInfoMapper.updateByPrimaryKeySelective(appInfo1);
+        } else {
+            if (statusId == 4) {
+                appInfo.setStatus(statusId);
+                appInfo.setOnsaledate(new Date());
+            } else if (statusId == 5) {
+                appInfo.setStatus(statusId);
+                appInfo.setOffsaledate(new Date());
+            } else {
+                appInfo.setStatus(statusId);
+            }
+            appInfo.setModifyby(adminId);
+            appInfo.setModifydate(new Date());
+            appInfoMapper.updateByPrimaryKeySelective(appInfo);
+        }
+    }
+
+    @Override
+    public void collectApp(UsersApp usersApp) {
+        List<Integer> selectedAppId = appInfoMapper.selectByUserId(usersApp.getUserId());
+        for (Integer i : selectedAppId) {
+            if (i == usersApp.getAppId()) {
+                throw new RuntimeException("已收藏该游戏");
+            }
+        }
+            usersApp.setCreateddate(new Date());
+            appInfoMapper.insertAppOfUser(usersApp);
+
+    }
+
+
 }

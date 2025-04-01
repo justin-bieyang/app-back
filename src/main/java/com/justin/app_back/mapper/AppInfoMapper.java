@@ -1,6 +1,8 @@
 package com.justin.app_back.mapper;
 
 import com.justin.app_back.pojo.AppInfo;
+import com.justin.app_back.pojo.UsersApp;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,4 +27,10 @@ public interface AppInfoMapper {
     int updateByPrimaryKey(AppInfo record);
 
     List<AppInfo> selectBy(AppInfo appInfo);
+
+    List<Integer> selectByUserId(Integer userId);
+
+    void insertAppOfUser(UsersApp usersApp);
+
+    List<AppInfo> selectCollectBy(@Param("appInfo") AppInfo appInfo, @Param("userId") Integer userId);
 }

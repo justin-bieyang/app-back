@@ -1,9 +1,8 @@
 package com.justin.app_back.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.justin.app_back.AppBackApplication;
-import com.justin.app_back.pojo.AppCategory;
 import com.justin.app_back.pojo.AppInfo;
+import com.justin.app_back.pojo.UsersApp;
 import com.justin.app_back.service.AppInfoService;
 import com.justin.app_back.vo.ResultVo;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,70 +33,70 @@ public class AppInfoController {
     @GetMapping("/appWithVersion/{appid}")
     public ResultVo appWithVersion(@PathVariable("appid") Integer appid) {
         AppInfo appInfo = appInfoService.getAppWithVersion(appid);
-        return ResultVo.success("",appInfo);
+        return ResultVo.success("", appInfo);
     }
 
     // 上传logo图片
 
     @PostMapping("/logo/{id}")
-    public ResultVo upLogo(@PathVariable Integer id, MultipartFile logo) {
-         if (logo != null && !logo.isEmpty()) {
-             // 说明前端上传了图片
-             String originalFilename = logo.getOriginalFilename(); // 获取文件名
-             String suffix = originalFilename.substring(originalFilename.lastIndexOf(".")); // 获取文件格式
+    public ResultVo upLogo(@PathVariable Integer id, MultipartFile logo, @RequestParam Integer devId) {
+        if (logo != null && !logo.isEmpty()) {
+            // 说明前端上传了图片
+            String originalFilename = logo.getOriginalFilename(); // 获取文件名
+            String suffix = originalFilename.substring(originalFilename.lastIndexOf(".")); // 获取文件格式
 
-             if(logo.getSize() > 1024*1024){ // 不超过1M
-                 return ResultVo.error("文件过大，上传不要大于1M!");
-             } else if(
-                     suffix.equalsIgnoreCase(".jpg") ||
-                     suffix.equalsIgnoreCase(".png") ||
-                     suffix.equalsIgnoreCase(".gif") ||
-                     suffix.equalsIgnoreCase(".jpeg")
-             ) {
+            if (logo.getSize() > 1024 * 1024) { // 不超过1M
+                return ResultVo.error("文件过大，上传不要大于1M!");
+            } else if (
+                    suffix.equalsIgnoreCase(".jpg") ||
+                            suffix.equalsIgnoreCase(".png") ||
+                            suffix.equalsIgnoreCase(".gif") ||
+                            suffix.equalsIgnoreCase(".jpeg")
+            ) {
 
-                 // 上传文件
-                 File savePath = new File(uploadPath);
+                // 上传文件
+                File savePath = new File(uploadPath);
 
-                 if(!savePath.exists()){
-                     savePath.mkdirs();
-                 }
+                if (!savePath.exists()) {
+                    savePath.mkdirs();
+                }
 
-                 // 文件起新名字
+                // 文件起新名字
 
-                 String newFileName = UUID.randomUUID().toString().replace("-", "");
-                 File saveFile = new File(uploadPath+newFileName+suffix);
-                 try {
-                     logo.transferTo(saveFile);
+                String newFileName = UUID.randomUUID().toString().replace("-", "");
+                File saveFile = new File(uploadPath + newFileName + suffix);
+                try {
+                    logo.transferTo(saveFile);
 
-                     // 文件上传成功
+                    // 文件上传成功
 
-                     // 保存到数据库
-                     AppInfo appInfo = appInfoService.getById(id);
+                    // 保存到数据库
+                    AppInfo appInfo = appInfoService.getById(id);
 
-                     appInfo.setLogopicpath(newFileName + suffix);
+                    appInfo.setLogopicpath(newFileName + suffix);
 
-                     appInfoService.update(appInfo);
+                    appInfoService.update(appInfo,devId);
 
-                     return ResultVo.success("上传logo成功！",null);
+                    return ResultVo.success("上传logo成功！", null);
 
-                 } catch (IOException e) {
-                     throw new RuntimeException("文件上传异常！");
-                 }
+                } catch (IOException e) {
+                    throw new RuntimeException("文件上传异常！");
+                }
 
-             }else {
+            } else {
                 return ResultVo.error("文件格式不对，必须是图片！");
-             }
-         }else {
-             return ResultVo.error("必须上传文件！");
-         }
+            }
+        } else {
+            return ResultVo.error("必须上传文件！");
+        }
     }
 
     @PostMapping("/page")
     public ResultVo page(@RequestBody AppInfo appInfo, @RequestParam(defaultValue = "1") int pageNum) {
 
-        PageInfo pageInfo =appInfoService.getPage(appInfo, pageNum);
+        PageInfo pageInfo = appInfoService.getPage(appInfo, pageNum);
 
-        return ResultVo.success("",pageInfo);
+        return ResultVo.success("", pageInfo);
 
     }
 
@@ -105,21 +104,21 @@ public class AppInfoController {
     @GetMapping("/validate")
     public ResultVo validateAPKName(@RequestParam(required = true) String apkname, @RequestParam(required = false) Integer id) {
 
-        boolean fag = appInfoService.validateAPKName(apkname,id);
+        boolean fag = appInfoService.validateAPKName(apkname, id);
 
-        return ResultVo.success("",fag);
+        return ResultVo.success("", fag);
 
     }
 
     // 新增和修改接口
     @PostMapping("/update")
-    public ResultVo update(@RequestBody AppInfo appInfo) {
+    public ResultVo update(@RequestBody AppInfo appInfo, @RequestParam(required = true) Integer adminIdOrDevId) {
 
-        int update = appInfoService.update(appInfo);
+        int update = appInfoService.update(appInfo, adminIdOrDevId);
 
-        if (update != 0){
-            return ResultVo.success("数据操作成功！",null);
-        }else
+        if (update != 0) {
+            return ResultVo.success("数据操作成功！", null);
+        } else
             return ResultVo.error("数据操作失败！");
 
     }
@@ -127,13 +126,51 @@ public class AppInfoController {
     @DeleteMapping("/delete/{id}")
     public ResultVo deleteById(@PathVariable Integer id) {
 
-        int delete = appInfoService.deleteById(id,uploadPath);
+        int delete = appInfoService.deleteById(id, uploadPath);
 
-        if (delete != 0){
-            return ResultVo.success("数据删除成功！",null);
-        }else
+        if (delete != 0) {
+            return ResultVo.success("数据删除成功！", null);
+        } else
             return ResultVo.error("数据更删除失败！");
 
+    }
+
+    @PostMapping("/review")
+    public ResultVo reviewStatus(@RequestBody AppInfo appInfo,
+                                 @RequestParam(required = true) Integer adminId,
+                                 @RequestParam Integer statusId) {
+
+        appInfoService.reviewAppStatus(appInfo, adminId, statusId);
+
+        return ResultVo.success("审核完成", null);
+
+    }
+
+    @PostMapping("/collect")
+    public ResultVo collect(@RequestBody UsersApp usersApp) {
+
+        appInfoService.collectApp(usersApp);
+
+        return ResultVo.success("收藏成功",null);
+    }
+
+    @PostMapping("/collectPage")
+    public ResultVo collectPage(@RequestBody AppInfo appInfo,
+                                @RequestParam(defaultValue = "1") int pageNum,
+                                @RequestParam Integer userId) {
+
+        PageInfo pageInfo = appInfoService.getCollectPage(appInfo, pageNum, userId);
+
+        return ResultVo.success("", pageInfo);
+    }
+
+    @DeleteMapping("/cancelCollect/{appId}")
+    public ResultVo cancelCollect(@PathVariable Integer appId,
+                                  @RequestParam Integer userId){
+
+        appInfoService.cancelCollect(appId, userId);
+
+        return ResultVo.success("取消收藏成功",null);
     }
 
 }
