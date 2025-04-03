@@ -11,9 +11,9 @@ import com.justin.app_back.pojo.DevUser;
 public interface DevService {
     PageInfo geyPage(DevUser devUser, int pageNum);
 
-    void updateDev(DevUser devUser,Integer adminOrDevId,String userTye);
+    void updateDev(DevUser devUser,String username,String userTye);
 
-    void addDev(DevUser devUser, Integer adminId);
+    void addDev(DevUser devUser, String adminName);
 
     void deleteDev(Integer id);
 }

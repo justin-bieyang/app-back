@@ -1,7 +1,6 @@
 package com.justin.app_back.utils;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
@@ -9,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
+ * jwt工具类
  * @author 小杜
  * @version 1.0
  * @since 1.0

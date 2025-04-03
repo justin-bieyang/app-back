@@ -52,6 +52,11 @@
         from backend_user
         where userName = #{username} and userType = 2
     </select>
+    <select id="selectByUsername" resultType="com.justin.app_back.pojo.BackendUser">
+        select *
+        from backend_user
+        where userName = #{username}
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from backend_user

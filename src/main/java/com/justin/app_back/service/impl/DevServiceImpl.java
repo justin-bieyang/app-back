@@ -2,6 +2,7 @@ package com.justin.app_back.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.justin.app_back.mapper.BackendUserMapper;
 import com.justin.app_back.mapper.DevUserMapper;
 import com.justin.app_back.pojo.BackendUser;
 import com.justin.app_back.pojo.DevUser;
@@ -24,6 +25,9 @@ public class DevServiceImpl implements DevService {
     @Resource
     private DevUserMapper devUserMapper;
 
+    @Resource
+    private BackendUserMapper backendUserMapper;
+
     @Override
     public PageInfo geyPage(DevUser devUser, int pageNum) {
 
@@ -33,19 +37,25 @@ public class DevServiceImpl implements DevService {
     }
 
     @Override
-    public void updateDev(DevUser devUser, Integer adminOrDevId, String userType) {
+    public void updateDev(DevUser devUser, String username, String userType) {
 
         if(userType.equals("admin")){
-            devUser.setModifyby(adminOrDevId);
+
+            BackendUser backendUser = backendUserMapper.selectByUsername(username);
+
+            devUser.setModifyby(backendUser.getId());
 
             devUser.setModifydate((new Date()));
 
             devUserMapper.updateByPrimaryKeySelective(devUser);
         } else if (userType.equals("dev")) {
-            if(!Objects.equals(adminOrDevId, devUser.getId())){
+
+            DevUser devUser1 = devUserMapper.selectByUsername(username);
+
+            if(!Objects.equals(devUser1.getId(), devUser.getId())){
                 throw new RuntimeException("你只能修改本人的信息");
-            } else if (Objects.equals(adminOrDevId, devUser.getId())) {
-                devUser.setModifyby(adminOrDevId);
+            } else if (Objects.equals(devUser1.getId(), devUser.getId())) {
+                devUser.setModifyby(devUser1.getId());
 
                 devUser.setModifydate((new Date()));
 
@@ -55,8 +65,9 @@ public class DevServiceImpl implements DevService {
     }
 
     @Override
-    public void addDev(DevUser devUser, Integer adminId) {
-        devUser.setCreatedby(adminId);
+    public void addDev(DevUser devUser, String adminName) {
+        BackendUser backendUser = backendUserMapper.selectByUsername(adminName);
+        devUser.setCreatedby(backendUser.getId());
         devUserMapper.insert(devUser);
     }
 

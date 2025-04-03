@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
+ * 跨域配置类
  * @author 小杜
  * @version 1.0
  * @since 1.0

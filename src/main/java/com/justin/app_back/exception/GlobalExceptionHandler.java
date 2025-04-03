@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * 全局异常处理类
  * @author 小杜
  * @version 1.0
  * @since 1.0

@@ -13,5 +13,6 @@ public interface BackendUserService {
 
     void deleteById(Integer id);
 
-    void updateUserType(BackendUser backendUser, Integer adminOrUserId, String userType);
+//    void updateUserType(BackendUser backendUser, Integer adminOrUserId, String userType);
+    void updateUserType(BackendUser backendUser, String username);
 }

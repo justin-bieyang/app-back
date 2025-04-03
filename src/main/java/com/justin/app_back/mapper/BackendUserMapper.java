@@ -29,4 +29,6 @@ public interface BackendUserMapper {
     List<BackendUser> selectBy(BackendUser backendUser);
 
     BackendUser selectByCommonUsername(String username);
+
+    BackendUser selectByUsername(String username);
 }

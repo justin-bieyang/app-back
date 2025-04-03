@@ -2,12 +2,8 @@ package com.justin.app_back.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.justin.app_back.mapper.AppInfoMapper;
-import com.justin.app_back.mapper.AppVersionMapper;
-import com.justin.app_back.mapper.UserAppFkMapper;
-import com.justin.app_back.pojo.AppInfo;
-import com.justin.app_back.pojo.AppVersion;
-import com.justin.app_back.pojo.UsersApp;
+import com.justin.app_back.mapper.*;
+import com.justin.app_back.pojo.*;
 import com.justin.app_back.service.AppInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +32,12 @@ public class AppInfoServiceImpl implements AppInfoService {
     @Resource
     private UserAppFkMapper userAppFkMapper;
 
+    @Resource
+    private DevUserMapper devUserMapper;
+
+    @Resource
+    private BackendUserMapper backendUserMapper;
+
     @Override
     public PageInfo getPage(AppInfo appInfo, int pageNum) {
 
@@ -46,22 +48,72 @@ public class AppInfoServiceImpl implements AppInfoService {
         return new PageInfo(appInfoList);
     }
 
+//    @Override
+//    public PageInfo getCollectPage(AppInfo appInfo, int pageNum, Integer userId) {
+//        PageHelper.startPage(pageNum, 5, "id asc");
+//
+//        List<AppInfo> appInfoList = appInfoMapper.selectCollectBy(appInfo,userId);
+//
+//        return new PageInfo(appInfoList);
+//    }
+
     @Override
-    public PageInfo getCollectPage(AppInfo appInfo, int pageNum, Integer userId) {
+    public PageInfo getCollectPage(AppInfo appInfo, int pageNum, String username) {
+
+        BackendUser backendUser = backendUserMapper.selectByUsername(username);
+
         PageHelper.startPage(pageNum, 5, "id asc");
 
-        List<AppInfo> appInfoList = appInfoMapper.selectCollectBy(appInfo,userId);
+        List<AppInfo> appInfoList = appInfoMapper.selectCollectBy(appInfo,backendUser.getId());
 
         return new PageInfo(appInfoList);
     }
 
     @Override
-    public void cancelCollect(Integer appId, Integer userId) {
-        userAppFkMapper.delete(appId, userId);
+    public void cancelCollect(Integer appId, String username) {
+
+        BackendUser backendUser = backendUserMapper.selectByUsername(username);
+
+        userAppFkMapper.delete(appId, backendUser.getId());
     }
 
+//    @Override
+//    public int update(AppInfo appInfo, Integer adminOrDevId) {
+//
+//        if (appInfo.getId() == null) {
+//
+//
+//            if (appInfo.getSoftwarename().trim().isEmpty()) {
+//                throw new RuntimeException("请输入有用的游戏名");
+//            }
+//
+//
+//            appInfo.setCreateddate(new Date());
+//            appInfo.setDownloads(0L);
+//            appInfo.setStatus(1); // 待审核
+//            appInfo.setDevid(adminOrDevId);
+//
+//            return appInfoMapper.insert(appInfo);
+//
+//
+//
+//        } else {
+//            AppInfo appInfo1 = appInfoMapper.selectByPrimaryKey(appInfo.getId());
+//            if (!(Objects.equals(appInfo1.getDevid(), adminOrDevId))) {
+//                throw new RuntimeException("你只能修改你自己开发的游戏信息");
+//            }else {
+//                appInfo.setStatus(1); // 待审核
+//                appInfo.setModifydate(new Date());
+//                appInfo.setModifyby(adminOrDevId);
+//                return appInfoMapper.updateByPrimaryKeySelective(appInfo);
+//            }
+//        }
+//    }
+
     @Override
-    public int update(AppInfo appInfo, Integer adminOrDevId) {
+    public int update(AppInfo appInfo, String userName) {
+
+        DevUser devUser = devUserMapper.selectByUsername(userName);
 
         if (appInfo.getId() == null) {
 
@@ -74,7 +126,8 @@ public class AppInfoServiceImpl implements AppInfoService {
             appInfo.setCreateddate(new Date());
             appInfo.setDownloads(0L);
             appInfo.setStatus(1); // 待审核
-            appInfo.setDevid(adminOrDevId);
+
+            appInfo.setDevid(devUser.getId());
 
             return appInfoMapper.insert(appInfo);
 
@@ -82,12 +135,12 @@ public class AppInfoServiceImpl implements AppInfoService {
 
         } else {
             AppInfo appInfo1 = appInfoMapper.selectByPrimaryKey(appInfo.getId());
-            if (!(Objects.equals(appInfo1.getDevid(), adminOrDevId))) {
+            if (!(Objects.equals(appInfo1.getDevid(), devUser.getId()))) {
                 throw new RuntimeException("你只能修改你自己开发的游戏信息");
             }else {
                 appInfo.setStatus(1); // 待审核
                 appInfo.setModifydate(new Date());
-                appInfo.setModifyby(adminOrDevId);
+                appInfo.setModifyby(devUser.getId());
                 return appInfoMapper.updateByPrimaryKeySelective(appInfo);
             }
         }
@@ -165,8 +218,32 @@ public class AppInfoServiceImpl implements AppInfoService {
         return appInfo;
     }
 
+//    @Override
+//    public void reviewAppStatus(AppInfo appInfo, Integer adminId, Integer statusId) {
+//
+//        AppInfo appInfo1 = appInfoMapper.selectByPrimaryKey(appInfo.getId());
+//
+//        if (Objects.equals(appInfo1.getStatus(), statusId)) {
+//            appInfoMapper.updateByPrimaryKeySelective(appInfo1);
+//        } else {
+//            if (statusId == 4) {
+//                appInfo.setStatus(statusId);
+//                appInfo.setOnsaledate(new Date());
+//            } else if (statusId == 5) {
+//                appInfo.setStatus(statusId);
+//                appInfo.setOffsaledate(new Date());
+//            } else {
+//                appInfo.setStatus(statusId);
+//            }
+//            appInfo.setModifyby(adminId);
+//            appInfo.setModifydate(new Date());
+//            appInfoMapper.updateByPrimaryKeySelective(appInfo);
+//        }
+//    }
     @Override
-    public void reviewAppStatus(AppInfo appInfo, Integer adminId, Integer statusId) {
+    public void reviewAppStatus(AppInfo appInfo, String adminUsername, Integer statusId) {
+
+        BackendUser backendUser = backendUserMapper.selectByUsername(adminUsername);
 
         AppInfo appInfo1 = appInfoMapper.selectByPrimaryKey(appInfo.getId());
 
@@ -182,14 +259,17 @@ public class AppInfoServiceImpl implements AppInfoService {
             } else {
                 appInfo.setStatus(statusId);
             }
-            appInfo.setModifyby(adminId);
+            appInfo.setModifyby(backendUser.getId());
             appInfo.setModifydate(new Date());
             appInfoMapper.updateByPrimaryKeySelective(appInfo);
         }
     }
 
     @Override
-    public void collectApp(UsersApp usersApp) {
+    public void collectApp(UsersApp usersApp, String username) {
+
+        BackendUser backendUser = backendUserMapper.selectByUsername(username);
+        usersApp.setUserId(backendUser.getId());
         List<Integer> selectedAppId = appInfoMapper.selectByUserId(usersApp.getUserId());
         for (Integer i : selectedAppId) {
             if (i == usersApp.getAppId()) {

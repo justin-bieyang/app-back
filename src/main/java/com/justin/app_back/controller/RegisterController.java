@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
+ * 注册控制层
  * @author 小杜
  * @version 1.0
  * @since 1.0
@@ -24,6 +25,11 @@ public class RegisterController {
     @Resource
     private RegisterService registerService;
 
+    /**
+     * 普通用户注册
+     * @param registerDto
+     * @return
+     */
     @PostMapping("/user")
     public ResultVo registerUser(@RequestBody UserRegisterDto registerDto) {
 
@@ -32,6 +38,11 @@ public class RegisterController {
         return ResultVo.success("普通用户注册成功", null);
     }
 
+    /**
+     * 开发者注册
+     * @param registerDto
+     * @return
+     */
     @PostMapping("/dev")
     public ResultVo registerDev(@RequestBody DevRegisterDto registerDto) {
 

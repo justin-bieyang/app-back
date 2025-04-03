@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
+ * app版本控制类
  * @author 小杜
  * @version 1.0
  * @since 1.0
@@ -34,6 +35,12 @@ public class AppVersionController {
     private AppVersionServion appVersionServion;
 
 
+    /**
+     * 添加版本
+     * @param appVersion
+     * @param apkFile
+     * @return
+     */
     @PostMapping
     public ResultVo addVersion(AppVersion appVersion, MultipartFile apkFile) {
 

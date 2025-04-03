@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 /**
+ * 登录控制层
  * @author 小杜
  * @version 1.0
  * @since 1.0
@@ -22,17 +23,15 @@ public class LoginController {
     @Resource
     private LoginService loginService;
 
+    /**
+     * 登录接口
+     * @param loginDto
+     * @return
+     */
     @PostMapping("/login")
     public ResultVo login(@RequestBody LoginDto loginDto) {
 
-//        if(httpSession.getAttribute("login") != null) {
-//            return ResultVo.success("登录成功","okay");
-//        }
-
-
         LoginVo login = loginService.login(loginDto);
-
-//       httpSession.setAttribute("login","jack");
 
         return ResultVo.success("登录成功",login);
 

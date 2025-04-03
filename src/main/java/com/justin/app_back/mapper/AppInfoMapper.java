@@ -33,4 +33,5 @@ public interface AppInfoMapper {
     void insertAppOfUser(UsersApp usersApp);
 
     List<AppInfo> selectCollectBy(@Param("appInfo") AppInfo appInfo, @Param("userId") Integer userId);
+
 }

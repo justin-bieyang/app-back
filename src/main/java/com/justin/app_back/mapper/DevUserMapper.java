@@ -1,5 +1,6 @@
 package com.justin.app_back.mapper;
 
+import com.justin.app_back.pojo.AppInfo;
 import com.justin.app_back.pojo.BackendUser;
 import com.justin.app_back.pojo.DevUser;
 
@@ -28,4 +29,6 @@ public interface DevUserMapper {
     int updateByPrimaryKey(DevUser record);
 
     List<DevUser> selectBy(DevUser devUser);
+
+
 }

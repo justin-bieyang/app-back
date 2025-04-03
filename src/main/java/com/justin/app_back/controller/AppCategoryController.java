@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
+ * app种类控制层
  * @author 小杜
  * @version 1.0
  * @since 1.0
@@ -21,6 +22,10 @@ public class AppCategoryController {
     @Resource
     private AppCategoryService appCategoryService;
 
+    /**
+     *拿到游戏分类节点数
+     * @return
+     */
     @GetMapping("/tree")
     public ResultVo getTree() {
 

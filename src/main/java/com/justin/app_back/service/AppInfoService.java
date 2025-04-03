@@ -15,7 +15,8 @@ public interface AppInfoService {
 
     PageInfo getPage(AppInfo appInfo, int pageNum);
 
-    int update(AppInfo appInfo, Integer adminOrDevId);
+//    int update(AppInfo appInfo, Integer adminOrDevId);
+    int update(AppInfo appInfo, String useName);
 
     int deleteById(Integer id, String uploadPath);
 
@@ -25,12 +26,12 @@ public interface AppInfoService {
 
     AppInfo getAppWithVersion(Integer appid);
 
-    void reviewAppStatus(AppInfo appInfo, Integer adminId, Integer statusId);
+    void reviewAppStatus(AppInfo appInfo, String adminUsername, Integer statusId);
 
-    void collectApp(UsersApp usersApp);
+    void collectApp(UsersApp usersApp, String username);
 
-    PageInfo getCollectPage(AppInfo appInfo, int pageNum, Integer userId);
+    PageInfo getCollectPage(AppInfo appInfo, int pageNum, String username);
 
-    void cancelCollect(Integer appId, Integer userId);
+    void cancelCollect(Integer appId, String username);
 }
 
